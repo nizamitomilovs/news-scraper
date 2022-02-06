@@ -8,5 +8,5 @@ use App\Http\Controllers\ScraperUpdatePost;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/scrape', ScraperIndex::class);
-Route::post('/scrape', ScraperStore::class);
+Route::post('/scrape/{page?}', ScraperStore::class);
 Route::patch('/scrape/post/{id}', ScraperUpdatePost::class);

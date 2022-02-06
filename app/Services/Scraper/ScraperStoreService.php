@@ -27,9 +27,9 @@ class ScraperStoreService
         $this->newsRepository = $newsRepository;
     }
 
-    public function execute(): array
+    public function execute(int $page): array
     {
-        $crawler = $this->crawlerClient->request(self::METHOD, $this->webUrl);
+        $crawler = $this->crawlerClient->request(self::METHOD, $this->webUrl . '?p=' . $page);
         $scrapedNews = [];
 
         $crawler->filter('tr.athing')->each(function ($node) use (&$scrapedNews) {

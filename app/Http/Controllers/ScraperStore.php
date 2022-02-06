@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Services\Scraper\ScraperStoreService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ScraperStore extends Controller
 {
@@ -16,12 +18,25 @@ class ScraperStore extends Controller
         $this->service = $service;
     }
 
-    public function __invoke(): JsonResponse
+    public function __invoke(Request $request): JsonResponse
     {
-        $scrapedNews = $this->service->execute();
+        $page = $this->validateRequest($request);
+
+        $scrapedNews = $this->service->execute($page);
 
         return response()->json([
             'news' => $scrapedNews
         ]);
+    }
+
+    protected function validateRequest(Request $request): int
+    {
+        $validator = Validator::make($request->all(), [
+            'page' => ['integer', 'max:20', 'min:1'],
+        ]);
+
+        $payload = $validator->validate();
+
+        return (int) $payload['page'] ?? 1;
     }
 }

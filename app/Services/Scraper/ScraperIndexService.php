@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Crawler;
+namespace App\Services\Scraper;
 
 use App\Repository\NewsRepositoryInterface;
 
-class CrawlerIndexService
+class ScraperIndexService
 {
     private NewsRepositoryInterface $newsRepository;
 

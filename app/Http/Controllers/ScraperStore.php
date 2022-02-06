@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\Crawler\CrawlerStoreService;
+use App\Services\Scraper\ScraperStoreService;
 use Illuminate\Http\JsonResponse;
 
 class ScraperStore extends Controller
 {
-    private CrawlerStoreService $service;
+    private ScraperStoreService $service;
 
-    public function __construct(CrawlerStoreService $service)
+    public function __construct(ScraperStoreService $service)
     {
         $this->service = $service;
     }

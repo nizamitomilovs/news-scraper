@@ -44,7 +44,7 @@
                 <td>{{ post.posted_at }}</td>
                 <td>
                     <div>
-                        <button @click="updatePost(post.id)" class="update-button">Update</button>
+                        <button @click="post.point = updatePost(post.id)" class="update-button">Update</button>
                     </div>
                 </td>
             </tr>
@@ -128,15 +128,15 @@ export default {
             })
         },
         updatePost(id) {
-            axios.post(`/post/points/` + id).then(() => {
+            axios.patch('/scrape/post/' + id).then(() => {
                 Fire.$emit('reloadNews')
-                swal(
+                new swal(
                     'Success!',
                     'Post updated',
                     'success'
                 )
             }).catch(() => {
-                swal('Failed', 'There was something wrong', 'warning');
+                new swal('Failed', 'There was something wrong', 'warning');
             });
         },
         getNews() {

@@ -5447,11 +5447,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updatePost: function updatePost(id) {
-      axios.post("/post/points/" + id).then(function () {
+      axios.patch('/scrape/post/' + id).then(function () {
         Fire.$emit('reloadNews');
-        swal('Success!', 'Post updated', 'success');
+        new swal('Success!', 'Post updated', 'success');
       })["catch"](function () {
-        swal('Failed', 'There was something wrong', 'warning');
+        new swal('Failed', 'There was something wrong', 'warning');
       });
     },
     getNews: function getNews() {
@@ -31908,7 +31908,7 @@ var render = function () {
                     staticClass: "update-button",
                     on: {
                       click: function ($event) {
-                        return _vm.updatePost(post.id)
+                        post.point = _vm.updatePost(post.id)
                       },
                     },
                   },

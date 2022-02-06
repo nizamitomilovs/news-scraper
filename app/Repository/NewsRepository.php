@@ -19,7 +19,7 @@ class NewsRepository implements NewsRepositoryInterface
                 [
                     'title' => $post['title'],
                     'link' => $post['link'],
-                    'points' => (int) $post['points'],
+                    'points' => (int)$post['points'],
                     'posted_at' => date_create($post['posted_at'])->format('Y-m-d')
                 ]
             );
@@ -29,5 +29,22 @@ class NewsRepository implements NewsRepositoryInterface
     public function getNews(): array
     {
         return Post::all()->toArray();
+    }
+
+    public function getPost(string $postId): Post
+    {
+        return Post::where('id', $postId)->first();
+    }
+
+    public function updatePost(string $postId, int $points): Post
+    {
+        $postModel = Post::where('id', $postId)->first();
+        $postModel->update([
+            'points' => $points,
+        ]);
+
+        $postModel->refresh();
+
+        return $postModel;
     }
 }

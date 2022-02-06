@@ -11286,3 +11286,55 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.users-style {
+  width: 70%;
+  margin: auto;
+  margin-top: 20px;
+}
+.users-style .table-style {
+  margin-bottom: 10px;
+}
+.users-style .table-style input {
+  width: 175px;
+}
+.users-style .table-style .control {
+  float: right;
+}
+.users-style .table {
+  width: 100%;
+}
+.users-style .table .sorting {
+  background-image: url("/images/sort_both.png");
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+.users-style .table .sorting_asc {
+  background-image: url("/images/sort_asc.png");
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+.users-style .table .sorting_desc {
+  background-image: url("/images/sort_desc.png");
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+.users-style nav a {
+  color: white !important;
+  margin-right: 10px;
+}
+
+h1, .h1 {
+  text-align: center;
+  font-size: 30px;
+}
+
+.pagination {
+  justify-content: flex-end !important;
+}
+.pagination .page-stats {
+  align-items: center;
+  margin-right: 5px;
+}
+.pagination i {
+  color: #3273dc !important;
+}

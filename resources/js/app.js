@@ -19,6 +19,10 @@ import App from './layouts/App.vue';
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 
+import swal from 'sweetalert2';
+window.swal = swal;
+window.Fire = new Vue();
+
 const app = new Vue({
     router,
     el: '#app',

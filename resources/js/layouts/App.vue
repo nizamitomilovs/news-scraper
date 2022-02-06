@@ -2,7 +2,7 @@
     <div>
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <router-link :to="{ name: 'home' }" class="navbar-brand">
-                Laravel-Vue SPA
+                Web Scraper
             </router-link>
             <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -12,11 +12,6 @@
                     <li class="nav-item">
                         <router-link class="nav-link" data-toggle="collapse" :to="{ name: 'home' }">
                             Home
-                        </router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" data-toggle="collapse" :to="{ name: 'about' }">
-                            About
                         </router-link>
                     </li>
                 </ul>

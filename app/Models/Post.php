@@ -28,6 +28,10 @@ class Post extends Model
         'points'
     ];
 
+    protected $casts = [
+      'points' => 'integer'
+    ];
+
     /**
      * @var array<string>
      */

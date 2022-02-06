@@ -15,7 +15,7 @@ class CreateNewsTable extends Migration
             $table->bigInteger('id')->unique();
             $table->text('title');
             $table->text('link');
-            $table->bigInteger('points')->nullable()->nu;
+            $table->bigInteger('points')->default(0);
             $table->date('posted_at');
             $table->timestamps();
         });

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\Crawler\CrawlerServiceInterface;
+use App\Services\Crawler\CrawlerIndexService;
 use Illuminate\Http\JsonResponse;
 
-class ScraperController extends Controller
+class ScraperIndex
 {
-    private CrawlerServiceInterface $service;
-    public function __construct(CrawlerServiceInterface $service)
+    private CrawlerIndexService $service;
+
+    public function __construct(CrawlerIndexService $service)
     {
         $this->service = $service;
     }

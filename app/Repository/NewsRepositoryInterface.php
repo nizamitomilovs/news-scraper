@@ -10,4 +10,6 @@ interface NewsRepositoryInterface
      * @param array<string, string> $news
      */
     public function saveNews(array $news): void;
+
+    public function getNews(): array;
 }

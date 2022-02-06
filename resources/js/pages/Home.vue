@@ -1,10 +1,10 @@
 <template>
     <div class="users-style">
         <div style="margin-bottom: 20px;">
-            <h2>Hacker News</h2>
+            <h2>Web News</h2>
         </div>
         <div class="table-style">
-            <input class="input" type="text" v-model="search" placeholder="Search..."
+            <input class="input" type="text" v-model="search" placeholder="Search by title..."
                    @input="resetPagination()" style="width: 250px;">
             <div class="control">
                 <div class="select">
@@ -91,7 +91,7 @@ export default {
         return {
             news: [],
             columns: columns,
-            sortKey: 'points',
+            sortKey: 'title', //initial sorting parameter in alphabetical order
             sortOrders: sortOrders,
             length: 10,
             search: '',
@@ -122,7 +122,7 @@ export default {
             });
         },
         getNews() {
-            axios.get('/api/scrape/', {params: this.tableShow})
+            axios.get('/scrape', {params: this.tableShow})
                 .then(response => {
                     this.news = response.data.news;
                     this.pagination.total = this.news.length;
@@ -131,25 +131,26 @@ export default {
                     console.log(errors);
                 });
         },
-        paginate(array, length, pageNumber) {
-            this.pagination.from = array.length ? ((pageNumber - 1) * length) + 1 : ' ';
-            this.pagination.to = pageNumber * length > array.length ? array.length : pageNumber * length;
+        paginate(news, pageLength, pageNumber) {
+            this.pagination.from = news.length ? ((pageNumber - 1) * pageLength) + 1 : ' ';
+            this.pagination.to = pageNumber * pageLength > news.length ? news.length : pageNumber * pageLength;
             this.pagination.prevPage = pageNumber > 1 ? pageNumber : '';
-            this.pagination.nextPage = array.length > this.pagination.to ? pageNumber + 1 : '';
-            return array.slice((pageNumber - 1) * length, pageNumber * length);
+            this.pagination.nextPage = news.length > this.pagination.to ? pageNumber + 1 : '';
+
+            return news.slice((pageNumber - 1) * pageLength, pageNumber * pageLength);
         },
         resetPagination() {
             this.pagination.currentPage = 1;
             this.pagination.prevPage = '';
             this.pagination.nextPage = '';
         },
-        sortBy(key) {
+        sortBy(columnName) {
             this.resetPagination();
-            this.sortKey = key;
-            this.sortOrders[key] = this.sortOrders[key] * -1;
+            this.sortKey = columnName;
+            this.sortOrders[columnName] = this.sortOrders[columnName] * -1;
         },
-        getIndex(array, key, value) {
-            return array.findIndex(i => i[key] === value)
+        getIndex(columnNames, name, points) {
+            return columnNames.findIndex(i => i[name] === points)
         },
         isValidHttpUrl(string) {
             let url;
@@ -166,28 +167,36 @@ export default {
         filteredNews() {
             let news = this.news;
             if (this.search) {
-                news = news.filter((row) => {
-                    return Object.keys(row).some((key) => {
-                        return String(row[key]).toLowerCase().indexOf(this.search.toLowerCase()) > -1;
+                news = news.filter((post) => {
+
+                    return Object.keys(post).some((searchIndex) => {
+                        return String(post[searchIndex]).toLowerCase().indexOf(this.search.toLowerCase()) > -1;
                     })
                 });
             }
+
+            return news;
+        },
+        sortNews() {
+            let news = this.news;
+
             let sortKey = this.sortKey;
             let order = this.sortOrders[sortKey] || 1;
-
             if (sortKey) {
-                news = news.slice().sort((a, b) => {
+                news = news.slice().sort((post_1, post_2) => {
                     let index = this.getIndex(this.columns, 'name', sortKey);
-                    a = String(a[sortKey]).toLowerCase();
-                    b = String(b[sortKey]).toLowerCase();
-                    if (this.columns[index].type && this.columns[index].type === 'date') {
+                    post_1 = String(post_1[sortKey]).toLowerCase();
+                    post_2 = String(post_2[sortKey]).toLowerCase();
 
-                        return (a === b ? 0 : new Date(a).getTime() > new Date(b).getTime() ? 1 : -1) * order;
-                    } else if (this.columns[index].type && this.columns[index].type === 'number') {
-                        return (+a === +b ? 0 : +a > +b ? 1 : -1) * order;
-                    } else {
-                        return (a === b ? 0 : a > b ? 1 : -1) * order;
+                    if (this.columns[index].name && this.columns[index].name === 'date') {
+                        return (post_1 === post_2 ? 0 : new Date(post_1).getTime() > new Date(post_2).getTime() ? 1 : -1) * order;
                     }
+
+                    if (this.columns[index].name && this.columns[index].name === 'points') {
+                        return (+post_1 === +post_2 ? 0 : +post_1 > +post_2 ? 1 : -1) * order;
+                    }
+
+                    return (post_1 === post_2 ? 0 : post_1 > post_2 ? 1 : -1) * order;
                 });
             }
 

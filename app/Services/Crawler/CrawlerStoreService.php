@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services\Crawler;
 
-use App\Models\Post;
 use App\Repository\NewsRepositoryInterface;
 use Goutte\Client;
 use InvalidArgumentException;
 
-class CrawlerService implements CrawlerServiceInterface
+class CrawlerStoreService
 {
     private const METHOD = 'GET';
 
@@ -53,8 +52,8 @@ class CrawlerService implements CrawlerServiceInterface
 
                 $id = explode('_', $pointsClass->extract(['id'])[0])[1];
 
-                $scrapedNews[$id]['points'] = $points[0];
-                $scrapedNews[$id]['posted_at'] = $date;
+                $scrapedNews[$id]['points'] = (int) $points[0];
+                $scrapedNews[$id]['posted_at'] = date_create($date)->format('Y-m-d');
             } catch (InvalidArgumentException $e) {
                 $dateClass = $node->filter('.subtext > .age');
                 $idClass = $node->filter('.subtext > .age > a');
@@ -64,8 +63,8 @@ class CrawlerService implements CrawlerServiceInterface
                 $idData = $idClass->extract(['href'])[0];
                 $id = explode('=', $idData)[1];
 
-                $scrapedNews[$id]['posted_at'] = $date;
-                $scrapedNews[$id]['points'] = strlen($node->filter('.subtext > .score')->text('')) === 0 ?? null;
+                $scrapedNews[$id]['posted_at'] = date_create($date)->format('Y-m-d');
+                $scrapedNews[$id]['points'] = strlen($node->filter('.subtext > .score')->text('')) === 0 ?? 0;
             }
         });
 

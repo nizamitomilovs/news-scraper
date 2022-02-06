@@ -12,4 +12,9 @@ class NewsRepository implements NewsRepositoryInterface
     {
         Post::insert($news);
     }
+
+    public function getNews(): array
+    {
+        return Post::all()->toArray();
+    }
 }

@@ -1,13 +1,20 @@
 <template>
-    <div class="users-style">
+    <div class="news-style">
         <div style="margin-bottom: 20px;">
             <h2>Web News</h2>
         </div>
         <div class="table-style">
-            <input class="input" type="text" v-model="search" placeholder="Search by title..."
-                   @input="resetPagination()" style="width: 250px;">
-            <div class="control">
+            <div>
+                <input class="input" type="text" v-model="search" placeholder="Search..."
+                       @input="resetPagination()" style="width: 250px;">
+                <button class="fetch-button" @click="fetchNews()">
+                    <i v-if="this.fetchingNews !== false" class="fa fa-spinner fa-spin me-1"></i>
+                    Fetch News
+                </button>
+            </div>
+            <div class="control flex-column">
                 <div class="select">
+
                     <select v-model="length" @change="resetPagination()">
                         <option value="10">10</option>
                         <option value="20">20</option>
@@ -20,7 +27,7 @@
             <thead>
             <tr>
                 <th v-for="column in columns" :key="column.name" @click="sortBy(column.name)"
-                    :class="sortKey === column.name ? (sortOrders[column.name] > 0 ? 'sorting_asc' : 'sorting_desc') : 'sorting'"
+                    :class="sortKey === column.name ? 'sorting_desc' : ''"
                     style="width: 40%; cursor:pointer;">
                     {{ column.label }}
                 </th>
@@ -36,10 +43,8 @@
                 <td>{{ post.points }}</td>
                 <td>{{ post.posted_at }}</td>
                 <td>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item text-primary" href="#" @click="updatePost(post.id)">Update Points</a>
+                    <div>
+                        <button @click="updatePost(post.id)" class="update-button">Update</button>
                     </div>
                 </td>
             </tr>
@@ -50,10 +55,10 @@
                 <span class="page-stats">{{ pagination.from }} - {{ pagination.to }} of {{ pagination.total }}</span>
                 <a v-if="pagination.prevPageUrl" class="btn btn-sm btn-primary pagination-previous"
                    @click="--pagination.currentPage"> Prev </a>
-                <a class="btn btn-sm btn-primary pagination-previous" v-else disabled> Prev </a>
+                <a class="btn btn-sm btn-primary bg-black pagination-previous" v-else disabled> Prev </a>
                 <a v-if="pagination.nextPageUrl" class="btn btn-sm pagination-next" @click="++pagination.currentPage">
                     Next </a>
-                <a class="btn btn-sm btn-primary pagination-next" v-else disabled> Next </a>
+                <a class="btn btn-sm btn-primary bg-black pagination-next" v-else disabled> Next </a>
             </nav>
             <nav class="pagination" v-else>
 <span class="page-stats">
@@ -95,6 +100,7 @@ export default {
             sortOrders: sortOrders,
             length: 10,
             search: '',
+            fetchingNews: false,
             tableShow: {
                 showdata: true,
             },
@@ -109,8 +115,20 @@ export default {
         }
     },
     methods: {
+        fetchNews() {
+            this.fetchingNews =true
+            axios.post('/scrape', {params: this.tableShow})
+                .then(() => {
+                    Fire.$emit('reloadNews')
+                })
+                .catch(errors => {
+                    console.log(errors);
+                }).finally(() => {
+                    this.fetchingNews = false
+            })
+        },
         updatePost(id) {
-            axios.post(`/api/post/points/update`).then(() => {
+            axios.post(`/post/points/` + id).then(() => {
                 Fire.$emit('reloadNews')
                 swal(
                     'Success!',
@@ -175,30 +193,28 @@ export default {
                 });
             }
 
-            return news;
-        },
-        sortNews() {
-            let news = this.news;
-
             let sortKey = this.sortKey;
             let order = this.sortOrders[sortKey] || 1;
-            if (sortKey) {
-                news = news.slice().sort((post_1, post_2) => {
-                    let index = this.getIndex(this.columns, 'name', sortKey);
-                    post_1 = String(post_1[sortKey]).toLowerCase();
-                    post_2 = String(post_2[sortKey]).toLowerCase();
 
-                    if (this.columns[index].name && this.columns[index].name === 'date') {
-                        return (post_1 === post_2 ? 0 : new Date(post_1).getTime() > new Date(post_2).getTime() ? 1 : -1) * order;
-                    }
-
-                    if (this.columns[index].name && this.columns[index].name === 'points') {
-                        return (+post_1 === +post_2 ? 0 : +post_1 > +post_2 ? 1 : -1) * order;
-                    }
-
-                    return (post_1 === post_2 ? 0 : post_1 > post_2 ? 1 : -1) * order;
-                });
+            if (false === sortKey) {
+                return news;
             }
+
+            news = news.slice().sort((post_1, post_2) => {
+                let index = this.getIndex(this.columns, 'name', sortKey);
+                post_1 = String(post_1[sortKey]).toLowerCase();
+                post_2 = String(post_2[sortKey]).toLowerCase();
+
+                if (this.columns[index].name && this.columns[index].name === 'date') {
+                    return (post_1 === post_2 ? 0 : new Date(post_1).getTime() > new Date(post_2).getTime() ? 1 : -1) * order;
+                }
+
+                if (this.columns[index].name && this.columns[index].name === 'points') {
+                    return (+post_1 === +post_2 ? 0 : +post_1 > +post_2 ? 1 : -1) * order;
+                }
+
+                return (post_1 === post_2 ? 0 : post_1 > post_2 ? 1 : -1) * order;
+            });
 
             return news;
         },

@@ -5380,6 +5380,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   created: function created() {
     var _this = this;
@@ -5412,6 +5417,7 @@ __webpack_require__.r(__webpack_exports__);
       sortOrders: sortOrders,
       length: 10,
       search: '',
+      fetchingNews: false,
       tableShow: {
         showdata: true
       },
@@ -5426,8 +5432,22 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    fetchNews: function fetchNews() {
+      var _this2 = this;
+
+      this.fetchingNews = true;
+      axios.post('/scrape', {
+        params: this.tableShow
+      }).then(function () {
+        Fire.$emit('reloadNews');
+      })["catch"](function (errors) {
+        console.log(errors);
+      })["finally"](function () {
+        _this2.fetchingNews = false;
+      });
+    },
     updatePost: function updatePost(id) {
-      axios.post("/api/post/points/update").then(function () {
+      axios.post("/post/points/" + id).then(function () {
         Fire.$emit('reloadNews');
         swal('Success!', 'Post updated', 'success');
       })["catch"](function () {
@@ -5435,13 +5455,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     getNews: function getNews() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get('/scrape', {
         params: this.tableShow
       }).then(function (response) {
-        _this2.news = response.data.news;
-        _this2.pagination.total = _this2.news.length;
+        _this3.news = response.data.news;
+        _this3.pagination.total = _this3.news.length;
       })["catch"](function (errors) {
         console.log(errors);
       });
@@ -5482,46 +5502,41 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     filteredNews: function filteredNews() {
-      var _this3 = this;
+      var _this4 = this;
 
       var news = this.news;
 
       if (this.search) {
         news = news.filter(function (post) {
           return Object.keys(post).some(function (searchIndex) {
-            return String(post[searchIndex]).toLowerCase().indexOf(_this3.search.toLowerCase()) > -1;
+            return String(post[searchIndex]).toLowerCase().indexOf(_this4.search.toLowerCase()) > -1;
           });
         });
       }
 
-      return news;
-    },
-    sortNews: function sortNews() {
-      var _this4 = this;
-
-      var news = this.news;
       var sortKey = this.sortKey;
       var order = this.sortOrders[sortKey] || 1;
 
-      if (sortKey) {
-        news = news.slice().sort(function (post_1, post_2) {
-          var index = _this4.getIndex(_this4.columns, 'name', sortKey);
-
-          post_1 = String(post_1[sortKey]).toLowerCase();
-          post_2 = String(post_2[sortKey]).toLowerCase();
-
-          if (_this4.columns[index].name && _this4.columns[index].name === 'date') {
-            return (post_1 === post_2 ? 0 : new Date(post_1).getTime() > new Date(post_2).getTime() ? 1 : -1) * order;
-          }
-
-          if (_this4.columns[index].name && _this4.columns[index].name === 'points') {
-            return (+post_1 === +post_2 ? 0 : +post_1 > +post_2 ? 1 : -1) * order;
-          }
-
-          return (post_1 === post_2 ? 0 : post_1 > post_2 ? 1 : -1) * order;
-        });
+      if (false === sortKey) {
+        return news;
       }
 
+      news = news.slice().sort(function (post_1, post_2) {
+        var index = _this4.getIndex(_this4.columns, 'name', sortKey);
+
+        post_1 = String(post_1[sortKey]).toLowerCase();
+        post_2 = String(post_2[sortKey]).toLowerCase();
+
+        if (_this4.columns[index].name && _this4.columns[index].name === 'date') {
+          return (post_1 === post_2 ? 0 : new Date(post_1).getTime() > new Date(post_2).getTime() ? 1 : -1) * order;
+        }
+
+        if (_this4.columns[index].name && _this4.columns[index].name === 'points') {
+          return (+post_1 === +post_2 ? 0 : +post_1 > +post_2 ? 1 : -1) * order;
+        }
+
+        return (post_1 === post_2 ? 0 : post_1 > post_2 ? 1 : -1) * order;
+      });
       return news;
     },
     paginatedNews: function paginatedNews() {
@@ -31737,39 +31752,59 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "users-style" }, [
+  return _c("div", { staticClass: "news-style" }, [
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "table-style" }, [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.search,
-            expression: "search",
-          },
-        ],
-        staticClass: "input",
-        staticStyle: { width: "250px" },
-        attrs: { type: "text", placeholder: "Search by title..." },
-        domProps: { value: _vm.search },
-        on: {
-          input: [
-            function ($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.search = $event.target.value
-            },
-            function ($event) {
-              return _vm.resetPagination()
+      _c("div", [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.search,
+              expression: "search",
             },
           ],
-        },
-      }),
+          staticClass: "input",
+          staticStyle: { width: "250px" },
+          attrs: { type: "text", placeholder: "Search..." },
+          domProps: { value: _vm.search },
+          on: {
+            input: [
+              function ($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.search = $event.target.value
+              },
+              function ($event) {
+                return _vm.resetPagination()
+              },
+            ],
+          },
+        }),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "fetch-button",
+            on: {
+              click: function ($event) {
+                return _vm.fetchNews()
+              },
+            },
+          },
+          [
+            this.fetchingNews !== false
+              ? _c("i", { staticClass: "fa fa-spinner fa-spin me-1" })
+              : _vm._e(),
+            _vm._v("\n                    Fetch News\n                "),
+          ]
+        ),
+      ]),
       _vm._v(" "),
-      _c("div", { staticClass: "control" }, [
+      _c("div", { staticClass: "control flex-column" }, [
         _c("div", { staticClass: "select" }, [
           _c(
             "select",
@@ -31825,12 +31860,7 @@ var render = function () {
                 "th",
                 {
                   key: column.name,
-                  class:
-                    _vm.sortKey === column.name
-                      ? _vm.sortOrders[column.name] > 0
-                        ? "sorting_asc"
-                        : "sorting_desc"
-                      : "sorting",
+                  class: _vm.sortKey === column.name ? "sorting_desc" : "",
                   staticStyle: { width: "40%", cursor: "pointer" },
                   on: {
                     click: function ($event) {
@@ -31871,28 +31901,18 @@ var render = function () {
             _c("td", [_vm._v(_vm._s(post.posted_at))]),
             _vm._v(" "),
             _c("td", [
-              _c("a", {
-                staticClass: "dropdown-toggle",
-                attrs: {
-                  href: "#",
-                  "data-toggle": "dropdown",
-                  "aria-expanded": "false",
-                },
-              }),
-              _vm._v(" "),
-              _c("div", { staticClass: "dropdown-menu" }, [
+              _c("div", [
                 _c(
-                  "a",
+                  "button",
                   {
-                    staticClass: "dropdown-item text-primary",
-                    attrs: { href: "#" },
+                    staticClass: "update-button",
                     on: {
                       click: function ($event) {
                         return _vm.updatePost(post.id)
                       },
                     },
                   },
-                  [_vm._v("Update Points")]
+                  [_vm._v("Update")]
                 ),
               ]),
             ]),
@@ -31931,7 +31951,8 @@ var render = function () {
               : _c(
                   "a",
                   {
-                    staticClass: "btn btn-sm btn-primary pagination-previous",
+                    staticClass:
+                      "btn btn-sm btn-primary bg-black pagination-previous",
                     attrs: { disabled: "" },
                   },
                   [_vm._v(" Prev ")]
@@ -31953,7 +31974,8 @@ var render = function () {
               : _c(
                   "a",
                   {
-                    staticClass: "btn btn-sm btn-primary pagination-next",
+                    staticClass:
+                      "btn btn-sm btn-primary bg-black pagination-next",
                     attrs: { disabled: "" },
                   },
                   [_vm._v(" Next ")]

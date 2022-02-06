@@ -68,9 +68,8 @@ class CrawlerStoreService
             }
         });
 
-        $this->newsRepository->saveNews($scrapedNews);
+        $scrapedNews = $this->newsRepository->saveNews($scrapedNews);
 
-//        var_dump($scrapedNews);
-        return array_values($scrapedNews);
+        return iterator_to_array($scrapedNews);
     }
 }

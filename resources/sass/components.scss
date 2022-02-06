@@ -1,0 +1,56 @@
+// Google Fonts
+@import url('https://fonts.googleapis.com/css?family=Montserrat:600&display=swap');
+
+$measurement: 0.125em;
+
+.update-button {
+    background: white;
+    border: $measurement solid black;
+    cursor: pointer;
+    font: 600 0.7rem/1.25 'Montserrat', sans-serif;
+    letter-spacing: $measurement;
+    margin: 0.3rem;
+    padding: 4px;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.update-button:after {
+    content: '';
+    position: absolute;
+    transition: all 0.125s ease-in-out;
+}
+
+.update-button:hover {
+    border: $measurement dashed black;
+}
+
+.update-button:hover:after,
+.update-button:focus:after {
+    bottom: $measurement;
+    left: $measurement;
+    right: $measurement;
+    top: $measurement;
+}
+
+.fetch-button {
+    flex: content;
+    display: inline-block;
+    background: white;
+    border: $measurement solid black;
+    cursor: pointer;
+    font-size: 15px;
+    letter-spacing: $measurement;
+    margin: 0 5rem;
+    padding: 4px;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.fetch-button:hover {
+    background: black;
+    color: white;
+}
+
+
+

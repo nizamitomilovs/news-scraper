@@ -12,7 +12,7 @@ class CreateNewsTable extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->bigIncrements('incremental_id');
-            $table->bigInteger('id')->unique();
+            $table->integer('id')->unique();
             $table->text('title');
             $table->text('link');
             $table->bigInteger('points')->default(0);

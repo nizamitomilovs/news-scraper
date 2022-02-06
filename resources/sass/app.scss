@@ -7,7 +7,10 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-.users-style {
+// Components
+@import 'components';
+
+.news-style {
     width: 70%;
     margin: auto;
     margin-top: 20px;
@@ -22,25 +25,24 @@
     }
     .table {
         width: 100%;
-        .sorting {
-            background-image: url('/images/sort_both.png');
-            background-repeat: no-repeat;
-            background-position: center right;
-        }
-        .sorting_asc {
-            background-image: url('/images/sort_asc.png');
-            background-repeat: no-repeat;
-            background-position: center right;
-        }
         .sorting_desc {
-            background-image: url('/images/sort_desc.png');
+            background-image: url('/images/sort.png');
+            background-size: 25px;
             background-repeat: no-repeat;
             background-position: center right;
         }
+
     }
     nav a {
         color: white!important;
         margin-right: 10px;
+        background-color: black;
+        border-color: black;
+    }
+
+    nav a:hover {
+        color: black!important;
+        background-color: white;
     }
 }
 h1 {
@@ -54,6 +56,6 @@ h1 {
         margin-right: 5px;
     }
     i {
-        color: #3273dc !important;
+        color: black !important;
     }
 }

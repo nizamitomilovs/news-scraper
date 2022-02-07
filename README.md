@@ -1,4 +1,4 @@
-### Hackernews Scraper
+### Hacker news Scraper
 
 Simple SPA which uses laravel 8 and vue.js, to scrape news from <a href="https://news.ycombinator.com/">here</a>.
 
@@ -21,7 +21,7 @@ After installation web application should be available from:
 http://localhost:8000/
 
 As scraper can be done directly from the website, it can also be done by command
-1. Command responsible for fetching all posts from website, where page is optional parameter, if not specified it will pull 1 page
+1. Command responsible for fetching all posts from website, where page is optional parameter, if not specified it will pull first page
     * scrape-fetch:news page
 2. Command which is responsible for updating points for specific article, where article_id is required parameter
    * scrape-update-point:post article_id

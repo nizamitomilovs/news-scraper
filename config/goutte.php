@@ -17,5 +17,5 @@ return [
         'max_redirects' => 0
     ],
 
-    'timeout' => 60,
+    'timeout' => 1,
 ];

@@ -31,6 +31,7 @@ class ScraperStoreService
         $crawler = $this->crawlerClient->request(self::METHOD, $this->webUrl . '?p=' . $page);
         $scrapedNews = [];
 
+        //fetch titles, links and ids
         $crawler->filter('tr.athing')->each(function ($node) use (&$scrapedNews) {
             $newsId = implode('', $node->extract(['id']));
             $title = $node->filter('.title')->eq(1)->text();
@@ -42,11 +43,12 @@ class ScraperStoreService
             $scrapedNews[$newsId] = ['id' => $newsId, 'title' => $title, 'link' => $link];
         });
 
+        //fetch points and dates
         $crawler->filter('td.subtext')->each(function ($node) use (&$scrapedNews) {
             $date = implode('', $node->filter('.age')->extract(['title']));
 
-            $idClass = $node->filter('.age > a');
-            $id = explode('=', implode('', $idClass->extract(['href'])))[1];
+            $idCssClassValues = $node->filter('.age > a');
+            $id = explode('=', implode('', $idCssClassValues->extract(['href'])))[1];
 
             if (true == array_key_exists($id, $scrapedNews)) {
                 $scrapedNews[$id]['posted_at'] = date_create($date)->format('Y-m-d');
@@ -63,7 +65,7 @@ class ScraperStoreService
     private function validateAndConvert(string $link): string
     {
         if (str_starts_with($link, ScraperUpdatePostService::ENDPOINT_KEY)) {
-            return $this->webUrl . ScraperUpdatePostService::ENDPOINT_KEY;
+            return $this->webUrl . $link;
         }
 
         return $link;

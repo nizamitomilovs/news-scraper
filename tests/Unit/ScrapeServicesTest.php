@@ -16,7 +16,7 @@ use Mockery\MockInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Tests\TestCase;
 
-class ScrapeServices extends TestCase
+class ScrapeServicesTest extends TestCase
 {
     use DatabaseMigrations;
 

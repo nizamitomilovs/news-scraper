@@ -14,7 +14,7 @@ class ScraperIndexTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function testGetListWhenNoNewsStore(): void
+    public function testGetListWhenNoNewsStored(): void
     {
         $response = $this->get('/scrape');
 

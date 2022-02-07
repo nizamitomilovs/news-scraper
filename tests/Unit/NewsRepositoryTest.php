@@ -8,6 +8,8 @@ use App\Models\Post;
 use App\Repository\NewsRepository;
 use Database\Factories\PostFactory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Mockery;
+use Mockery\MockInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
 
@@ -22,7 +24,7 @@ class NewsRepositoryTest extends TestCase
         $repository = new NewsRepository();
 
         $news = $repository->getNews();
-        $this->assertCount(5,$news);
+        $this->assertCount(5, $news);
         $this->assertIsArray($news);
     }
 

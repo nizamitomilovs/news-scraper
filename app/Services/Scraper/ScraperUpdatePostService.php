@@ -33,10 +33,12 @@ class ScraperUpdatePostService
 
         $crawler = $this->crawlerClient->request('GET', $this->webUrl . self::ENDPOINT_KEY . $postId);
 
-        $crawler->filter('.score')->each(function ($node) use (&$points) {
-            $points = explode(' ', $node->text())[0];
+        $points = $crawler->filter('.score')->each(function ($node) {
+            return explode(' ', $node->text())[0];
         });
 
-        return $this->newsRepository->updatePost($postId, (int)$points);
+        var_dump($points);
+
+        return $this->newsRepository->updatePost($postId, (int) $points);
     }
 }

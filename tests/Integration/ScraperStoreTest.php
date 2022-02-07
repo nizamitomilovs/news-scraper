@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use App\Repository\NewsRepositoryInterface;
+use Database\Factories\PostFactory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Mockery;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 class ScraperStoreTest extends TestCase
@@ -26,15 +30,21 @@ class ScraperStoreTest extends TestCase
 
     public function testReturnsNews(): void
     {
+        $posts = PostFactory::new()->count(3)->create();
+        $this->app->instance(NewsRepositoryInterface::class,
+            Mockery::mock(NewsRepositoryInterface::class, function (MockInterface $mock) use ($posts) {
+                $mock->shouldReceive('saveNews')
+                    ->once()
+                    ->andYield($posts->toArray());
+            })
+        );
+
+
         $response = $this->post('/scrape')
         ->assertStatus(200);
 
         $data = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('news', $data);
         $this->assertGreaterThan(0, count($data['news']));
-
-        $this->assertDatabaseHas('news', [
-            'id' => $data['news'][0]['id']
-        ]);
     }
 }

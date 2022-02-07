@@ -48,6 +48,6 @@ class ScraperStore extends Controller
 
         $payload = $validator->validate();
 
-        return (int) isset($payload['page']) ?? 1;
+        return !isset($payload['page']) || 1 >= $payload['page'] ? 1 : $payload['page'];
     }
 }

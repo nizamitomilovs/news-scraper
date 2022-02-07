@@ -1,4 +1,4 @@
-### Hackernews Scraper
+### Hacker news Scraper
 
 Simple SPA which uses laravel 8 and vue.js, to scrape news from <a href="https://news.ycombinator.com/">here</a>.
 

@@ -37,8 +37,6 @@ class ScraperUpdatePostService
             return explode(' ', $node->text())[0];
         });
 
-        var_dump($points);
-
         return $this->newsRepository->updatePost($postId, (int) $points);
     }
 }

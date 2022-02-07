@@ -29,6 +29,8 @@ class ScraperUpdatePostService
 
     public function execute(string $postId): Post
     {
+        $this->newsRepository->getPost($postId);
+
         $crawler = $this->crawlerClient->request('GET', $this->webUrl . self::ENDPOINT_KEY . $postId);
 
         $crawler->filter('.score')->each(function ($node) use (&$points) {

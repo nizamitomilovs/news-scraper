@@ -6,7 +6,6 @@ namespace App\Services\Scraper;
 
 use App\Repository\NewsRepositoryInterface;
 use Goutte\Client;
-use InvalidArgumentException;
 
 class ScraperStoreService
 {

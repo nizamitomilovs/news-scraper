@@ -10,6 +10,7 @@ use App\Services\Scraper\ScraperStoreService;
 use App\Services\Scraper\ScraperUpdatePostService;
 use Goutte\Client as GoutteClient;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\HttpClient\HttpClient;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(NewsRepositoryInterface::class, NewsRepository::class);
+        $this->app->bind(AbstractBrowser::class, GoutteClient::class);
 
         $this->app->bind(ScraperStoreService::class, function ($app) {
             return new ScraperStoreService(

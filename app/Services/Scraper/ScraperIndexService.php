@@ -15,7 +15,7 @@ class ScraperIndexService
         $this->newsRepository = $newsRepository;
     }
 
-    public function execute()
+    public function execute(): array
     {
         return $this->newsRepository->getNews();
     }

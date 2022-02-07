@@ -8,6 +8,7 @@ use App\Services\Scraper\ScraperStoreService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ScraperStore extends Controller
 {
@@ -20,15 +21,25 @@ class ScraperStore extends Controller
 
     public function __invoke(Request $request): JsonResponse
     {
-        $page = $this->validateRequest($request);
+        try {
+            $page = $this->validateRequest($request);
 
-        $scrapedNews = $this->service->execute($page);
+            $scrapedNews = $this->service->execute($page);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => $e->getMessage(),
+                'message' => $e->errors()['page'],
+            ], 422);
+        }
 
         return response()->json([
             'news' => $scrapedNews
         ]);
     }
 
+    /**
+     * @throws ValidationException
+     */
     protected function validateRequest(Request $request): int
     {
         $validator = Validator::make($request->all(), [
@@ -37,6 +48,6 @@ class ScraperStore extends Controller
 
         $payload = $validator->validate();
 
-        return (int) $payload['page'] ?? 1;
+        return (int) isset($payload['page']) ?? 1;
     }
 }

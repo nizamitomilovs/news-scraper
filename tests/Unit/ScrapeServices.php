@@ -7,17 +7,14 @@ namespace Tests\Unit;
 use App\Models\Post;
 use App\Repository\NewsRepositoryInterface;
 use App\Services\Scraper\ScraperIndexService;
-use App\Services\Scraper\ScraperStoreService;
 use App\Services\Scraper\ScraperUpdatePostService;
 use Database\Factories\PostFactory;
 use Goutte\Client;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Iterator;
 use Mockery;
 use Mockery\MockInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Tests\TestCase;
-use Traversable;
 
 class ScrapeServices extends TestCase
 {
